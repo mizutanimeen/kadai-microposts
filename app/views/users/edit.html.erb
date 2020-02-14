@@ -1,0 +1,16 @@
+<h1>Change Name</h1>
+
+<div class="col-2">
+  <%= form_with(model: @user, local: true) do |f| %>
+    
+    <div class="form-group">
+      <%= f.label :name, "Name" %>
+      <%= f.text_field :name, class: "form-control" %>  
+    </div>
+  
+    <%= f.submit "変更", class: "btn btn-dark btn-block" %>
+  <% end %>
+  
+  <%= link_to "戻る", user_path() %>
+</div>
+

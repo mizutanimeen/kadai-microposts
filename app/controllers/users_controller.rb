@@ -1,12 +1,14 @@
 class UsersController < ApplicationController
   before_action :require_user_logged_in, only: [:index, :show]
-  
+
   def index
     @users = User.order(id: :desc).page(params[:id]).per(25)
   end
 
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.order(id: :desc).page(params[:page])
+    counts(@user)
   end
 
   def new
@@ -23,6 +25,29 @@ class UsersController < ApplicationController
       flash[:danger] = "ユーザーの登録に失敗しました"
       render :new
     end
+  end
+  
+  def edit
+    @user = User.find_by(id: session[:user_id])
+  end
+  
+  def update
+    @user = User.find_by(id: session[:user_id])
+    if @user.update(user_params)
+      flash[:success] = "名前を変更しました"
+      redirect_to @user
+    else
+      flash[:danger] = "名前を変更できませんでした"      
+      render :edit
+    end
+  end
+  
+  def destroy
+    @user = User.find_by(id: session[:user_id])
+    @user.destroy
+    
+    flash[:success] = "アカウントを削除しました"
+    redirect_to root_url
   end
 
   private

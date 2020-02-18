@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :require_user_logged_in, only: [:index, :show]
+  before_action :require_user_logged_in, only: [:index, :show, :destroy, :followings, :followers]
 
   def index
     @users = User.order(id: :desc).page(params[:id]).per(25)
@@ -27,27 +27,24 @@ class UsersController < ApplicationController
     end
   end
   
-  def edit
-    @user = User.find_by(id: session[:user_id])
-  end
-  
-  def update
-    @user = User.find_by(id: session[:user_id])
-    if @user.update(user_params)
-      flash[:success] = "名前を変更しました"
-      redirect_to @user
-    else
-      flash[:danger] = "名前を変更できませんでした"      
-      render :edit
-    end
-  end
-  
   def destroy
     @user = User.find_by(id: session[:user_id])
     @user.destroy
     
     flash[:success] = "アカウントを削除しました"
     redirect_to root_url
+  end
+  
+  def followings
+    @user = User.find(params[:id])
+    @followings = @user.followings.page(params[:page])
+    counts(@user)
+  end
+  
+  def followers
+    @user = User.find(params[:id])
+    @followers = @user.followers.page(params[:page])
+    counts(@user)
   end
 
   private

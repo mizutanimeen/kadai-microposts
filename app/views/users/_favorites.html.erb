@@ -1,3 +1,4 @@
+<% if microposts.any? %>
 <ul class="list-unstyled">
   <% microposts.each do |micropost| %>
     <li class="media mb-3">
@@ -22,3 +23,4 @@
   
   <%= paginate microposts %>
 </ul>
+<% end %>
